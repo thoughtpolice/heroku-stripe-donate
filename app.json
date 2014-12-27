@@ -1,0 +1,17 @@
+{
+  "name":        "Stripe Donation Backend Server",
+  "description": "A one-shot ruby application server for simple Stripe donations.",
+  "keywords":    ["ruby", "donate", "stripe"],
+  "repository":  "https://github.com/thoughtpolice/heroku-stripe-donate",
+
+  "env": {
+    "STRIPE_KEYS": {
+      "description": "Your public/private Stripe API keys, separated by a colon.",
+      "value": "pk_test_XXXXXXXX:sk_test_XXXXXXXX"
+    },
+    "STRIPE_CHARGE_DESC": {
+      "description": "Optional description attached to Stripe email receipts.",
+      "required": false
+    }
+  }
+}
