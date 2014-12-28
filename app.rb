@@ -87,13 +87,13 @@ def send_failure_mail(subject, text)
 end
 
 def push_msg(title, msg)
-    Pushover.notification(
-      url:       'https://dashboard.stripe.com',
-      url_title: 'Visit your Stripe Dashboard',
-      device:    settings.pushover_device,
-      title:     title,
-      message:   msg,
-    ) unless settings.pushover_key.nil? or settings.pushover_token.nil?
+  Pushover.notification(
+    url:       'https://dashboard.stripe.com',
+    url_title: 'Visit your Stripe Dashboard',
+    device:    settings.pushover_device,
+    title:     title,
+    message:   msg,
+  ) unless settings.pushover_key.nil? or settings.pushover_token.nil?
 end
 
 def send_success_push(subject, text)
