@@ -14,7 +14,7 @@
       "required": false
     },
     "CORS_ACCEPT_DOMAIN": {
-      "description": "Value to set for the `Access-Control-Allow-Origin` header",
+      "description": "Value to set for the `Access-Control-Allow-Origin` header.",
       "value": "*"
     },
     "PUSHOVER_USER_KEY": {
