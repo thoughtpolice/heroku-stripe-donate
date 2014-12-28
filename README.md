@@ -125,7 +125,7 @@ notifications to be sent to your devices.
 
 It's recommended you simply create a new application for your
 deployment (in the 'Apps & Plugins' section of the website) titled
-something like 'Stripe Donations', and use that applications token for
+something like 'Stripe Donations', and use that application token for
 push notifications.
 
 # Join in
