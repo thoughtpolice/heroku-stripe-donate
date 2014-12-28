@@ -6,5 +6,6 @@ gem 'stripe'
 gem 'thin'
 
 gem 'pushover'
+gem 'mailgun-ruby', '~>1.0.3', require: 'mailgun'
 
 gem 'foreman'

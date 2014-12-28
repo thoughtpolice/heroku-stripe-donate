@@ -6,6 +6,7 @@ require 'stripe'
 require 'sinatra'
 require 'thin'
 
+require 'mailgun'
 require 'pushover'
 
 # ------------------------------------------------------------------------------
@@ -37,6 +38,11 @@ set :pushover_key,    ENV['PUSHOVER_USER_KEY']
 set :pushover_token,  ENV['PUSHOVER_APP_TOKEN']
 set :pushover_device, ENV['PUSHOVER_DEVICE']
 
+set :mailgun_key,     ENV['MAILGUN_API_KEY']
+set :mailgun_from,    ENV['MAILGUN_FROM_ADDR']
+set :mailgun_to,      ENV['MAILGUN_TO_ADDR']
+set :mailgun_domain,  ENV['MAILGUN_DOMAIN']
+
 Stripe.api_key = settings.stripe_secret_key
 
 if (not settings.pushover_key.nil?) and (not settings.pushover_token.nil?)
@@ -46,6 +52,32 @@ if (not settings.pushover_key.nil?) and (not settings.pushover_token.nil?)
   end
 end
 
+def send_email(subject, text)
+  if (not settings.mailgun_key.nil?) and
+      (not settings.mailgun_from.nil?) and
+      (not settings.mailgun_to.nil?) and
+      (not settings.mailgun_domain.nil?)
+
+    LOG.info "Sending an email to #{settings.mailgun_to}..."
+    mailgun_client = Mailgun::Client.new settings.mailgun_key
+    mailgun_client.send_message settings.mailgun_domain, {
+      :from    => settings.mailgun_from,
+      :to      => settings.mailgun_to,
+      :subject => subject,
+      :text    => text,
+    }
+  end
+end
+
+def push_msg(title, msg)
+    Pushover.notification(
+      url:       'https://dashboard.stripe.com',
+      url_title: 'Visit your Stripe Dashboard',
+      device:    settings.pushover_device,
+      title:     title,
+      message:   msg,
+    ) unless settings.pushover_key.nil? or settings.pushover_token.nil?
+end
 
 # ------------------------------------------------------------------------------
 # -- Route handlers
@@ -82,15 +114,17 @@ post '/charge' do
       :description   => settings.stripe_charge_desc,
     )
 
-    Pushover.notification(
-      url:       'https://dashboard.stripe.com',
-      url_title: 'Visit your Stripe Dashboard',
-      title:     'Awesome news',
-      device:    settings.pushover_device,
-      message:
-        "You just received a donation of $#{@amount.to_f/100} USD "+
-        "from #{@email}!",
-    ) unless settings.pushover_key.nil? or settings.pushover_token.nil?
+    dollars = (@amount.to_f/100).round(2)
+
+    # Mailgun emails
+    send_email "You just got a donation!",
+      "Hey, just letting you know that you just got a donation of"+
+      "$#{dollars} USD from #{@email}!"
+
+    # Pushover notifications
+    push_msg "Awesome news",
+      "You just received a donation of $#{dollars} USD "+
+      "from #{@email}!"
 
     # Finished
     status 200

@@ -17,6 +17,7 @@
       "description": "Value to set for the `Access-Control-Allow-Origin` header.",
       "value": "*"
     },
+
     "PUSHOVER_USER_KEY": {
       "description": "Optional Pushover.net user key for push notifications.",
       "required": false
@@ -27,6 +28,23 @@
     },
     "PUSHOVER_DEVICE": {
       "description": "Optional device name for Pushover.net; only this device will receive notifications.",
+      "required": false
+    },
+
+    "MAILGUN_API_KEY": {
+      "description": "Optional mailgun API key for error reports."
+      "required": false
+    },
+    "MAILGUN_DOMAIN": {
+      "description": "If you're using mailgun, set this to the domain hosting this app; e.g. `donate.foobar.org` after registering it in Mailgun",
+      "required": false
+    },
+    "MAILGUN_FROM_ADDR": {
+      "description": "The from address for emails, e.g. `robot@donate.foobar.org`.",
+      "required": false
+    },
+    "MAILGUN_TO_ADDR": {
+      "description": "The address to send emails to, e.g. `admin@foobar.org`.",
       "required": false
     }
   }

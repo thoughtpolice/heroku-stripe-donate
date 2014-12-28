@@ -118,8 +118,8 @@ If you have an account with [Pushover.net](https://pushover.net), you
 can configure extra environment variables to enable push
 notifications to be sent to your devices.
 
-  - `PUSHOVER_USER_KEY`  - Your `pushover.net` user API key.
-  - `PUSHOVER_APP_TOKEN` - Your `pushover.net` application token.
+  - `PUSHOVER_USER_KEY`  - Your  user API key.
+  - `PUSHOVER_APP_TOKEN` - Your application token.
   - `PUSHOVER_DEVICE` - Specify a particular registered device by
     name; only this device will receive pushes.
 
@@ -127,6 +127,17 @@ It's recommended you simply create a new application for your
 deployment (in the 'Apps & Plugins' section of the website) titled
 something like 'Stripe Donations', and use that application token for
 push notifications.
+
+## [Mailgun.com](https://mailgun.com) support
+
+If you have an account with [Mailgun.com](https://mailgun.com), you
+can configure extra environment variables to send emails when errors
+occur.
+
+  - `MAILGUN_API_KEY`   - Your API key.
+  - `MAILGUN_DOMAIN` - The domain registered with mailgun, e.g. `donate.foobar.org`
+  - `MAILGUN_FROM_ADDR` - The `From:` address, e.g. `robot@donate.foobar.org`
+  - `MAILGUN_TO_ADDR` - The `To:` address to send emails to.
 
 # Join in
 
