@@ -12,6 +12,10 @@
     "STRIPE_CHARGE_DESC": {
       "description": "Optional description attached to Stripe email receipts.",
       "required": false
+    },
+    "CORS_ACCEPT_DOMAIN": {
+      "description": "Value to set for the `Access-Control-Allow-Origin` header",
+      "value": "*"
     }
   }
 }

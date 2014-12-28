@@ -72,7 +72,7 @@ function chargeCard(token)
   params.token  = token.id;
   params.email  = token.email;
 
-  $.post('https://MYAPPLICATION.herokuapp.com/donate/charge', params,
+  $.post('https://MYAPPLICATION.herokuapp.com/charge', params,
     // Success
     function () {
       var date = new Date();

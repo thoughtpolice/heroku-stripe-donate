@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'json'
+require 'logger'
 require 'stripe'
 require 'sinatra'
 require 'thin'
@@ -7,11 +8,20 @@ require 'thin'
 # ------------------------------------------------------------------------------
 # -- Checks
 
+LOG = Logger.new(STDOUT)
+
 if ENV['STRIPE_KEYS'].nil?
-  puts "The environment variable STRIPE_KEYS must be set to a string containing"
-  puts "Stripe API keys separated by a colon, e.g. 'PUBLIC_KEY:SECRET_KEY'"
-  exit 1
+  LOG.fatal "STRIPE_KEYS must be set."
+  Kernel.exit(1)
 end
+
+if ENV['STRIPE_KEYS'].split(':').length != 2
+  LOG.fatal "STRIPE_KEYS must be of the form '<PUBKEY>:<SECRETKEY>'"
+  Kernel.exit(1)
+end
+
+# Default setup
+ENV['CORS_ACCEPT_DOMAIN'] = '*' if ENV['CORS_ACCEPT_DOMAIN'].nil?
 
 # ------------------------------------------------------------------------------
 # -- Setup
@@ -22,26 +32,28 @@ set :stripe_charge_desc, ENV['STRIPE_CHARGE_DESC']
 
 Stripe.api_key = settings.stripe_secret_key
 
-get '/donate/pubkey.js' do
-  response['Access-Control-Allow-Origin'] = '*'
+# -- Show public key
+get '/pubkey.js' do
+  response['Access-Control-Allow-Origin'] = ENV['CORS_ACCEPT_DOMAIN']
 
   content_type 'text/javascript'
   "var stripe_pubkey = \"#{settings.stripe_public_key}\";"
 end
 
-get '/donate/ping' do
-  response['Access-Control-Allow-Origin'] = '*'
+# -- Ping URL
+get '/ping' do
+  LOG.info "Ping received."
   status 200
 end
 
 # ------------------------------------------------------------------------------
 # -- Donation handler
-post '/donate/charge' do
+post '/charge' do
   @amount = params[:amount]
   @token  = params[:token]
   @email  = params[:email]
 
-  response['Access-Control-Allow-Origin'] = '*'
+  response['Access-Control-Allow-Origin'] = ENV['CORS_ACCEPT_DOMAIN']
 
   begin
     # Create charge.

@@ -67,22 +67,22 @@ application to keep it alive.
 
 Once the server is started, there are 3 URLs it makes available:
 
-  - `/donate/pubkey.js` - a JavaScript file that contains a single
+  - `/pubkey.js` - a JavaScript file that contains a single
     variable named `stripe_pubkey`, containing your publishable Stripe
     key.
 
-  - `/donate/charge` - a `POST` endpoint that you send Stripe tokens
+  - `/charge` - a `POST` endpoint that you send Stripe tokens
     to, so the Stripe API can charge them. Note that this endpoint
 
-  - `/donate/ping` - making a `GET` request here only responds with a
+  - `/ping` - making a `GET` request here only responds with a
     200 HTTP status and has no other effect. It is meant to be used by
     [heroku-ping](https://github.com/thoughtpolice/heroku-ping) or
     another application to keep your Dyno alive.
 
 The basic idea is that you include
-`https://donate-MYAPP.herokuapp.com/donate/pubkey.js` on your page to
+`https://donate-MYAPP.herokuapp.com/pubkey.js` on your page to
 get access to your public key, and then you use that key to make a
-request to `https://donate-MYAPP.herokuapp.com/donate/charge` via an
+request to `https://donate-MYAPP.herokuapp.com/charge` via an
 API like `checkout.js`. **NB**: the server automatically sets outgoing
 CORS headers, so browsers are happy with making external
 `XMLHttpRequest` calls that would normally violate SOP.
