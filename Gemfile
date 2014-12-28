@@ -5,4 +5,6 @@ gem 'sinatra'
 gem 'stripe'
 gem 'thin'
 
+gem 'pushover'
+
 gem 'foreman'

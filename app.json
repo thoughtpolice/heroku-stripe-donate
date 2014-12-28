@@ -16,6 +16,18 @@
     "CORS_ACCEPT_DOMAIN": {
       "description": "Value to set for the `Access-Control-Allow-Origin` header",
       "value": "*"
+    },
+    "PUSHOVER_USER_KEY": {
+      "description": "Optional Pushover.net user key for push notifications.",
+      "required": false
+    },
+    "PUSHOVER_APP_TOKEN": {
+      "description": "Optional Pushover.net application token for push notifications.",
+      "required": false
+    },
+    "PUSHOVER_DEVICE": {
+      "description": "Optional device name for Pushover.net; only this device will receive notifications.",
+      "required": false
     }
   }
 }

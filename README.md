@@ -112,6 +112,22 @@ $ cd demo && python -m SimpleHTTPServer
 Now visit http://localhost:8000, and test out the donation button! It
 works with both Credit Card and Bitcoin, too.
 
+## [Pushover.net](https://pushover.net) support
+
+If you have an account with [Pushover.net](https://pushover.net), you
+can configure extra environment variables to enable push
+notifications to be sent to your devices.
+
+  - `PUSHOVER_USER_KEY`  - Your `pushover.net` user API key.
+  - `PUSHOVER_APP_TOKEN` - Your `pushover.net` application token.
+  - `PUSHOVER_DEVICE` - Specify a particular registered device by
+    name; only this device will receive pushes.
+
+It's recommended you simply create a new application for your
+deployment (in the 'Apps & Plugins' section of the website) titled
+something like 'Stripe Donations', and use that applications token for
+push notifications.
+
 # Join in
 
 Be sure to read the [contributing guidelines][contribute]. File bugs
