@@ -87,6 +87,7 @@ def send_failure_mail(subject, text)
 end
 
 def push_msg(title, msg)
+  LOG.info "Sending a push notification..."
   Pushover.notification(
     url:       'https://dashboard.stripe.com',
     url_title: 'Visit your Stripe Dashboard',
@@ -159,11 +160,14 @@ post '/charge' do
     status e.http_status
     body e.json_body[:error].to_json
 
+    LOG.error "Card was declined: #{e}"
+
   # -- TODO FIXME: This is bad; email?
   rescue Stripe::StripeError => e
     status e.http_status
     body e.json_body[:error].to_json
 
+    LOG.error "An error occurred: #{e}"
     send_failure_mail "Whoops!", "Your donation server just had an error! #{e}"
     send_failure_push "Uh oh!", "Your donation server just had an error! #{e}"
 
@@ -174,6 +178,7 @@ post '/charge' do
     status e.http_status
     body e.json_body[:error].to_json
 
+    LOG.error "An error occurred: #{e}"
     send_failure_mail "Whoops!", "Your donation server just had an error! #{e}"
     send_failure_push "Uh oh!", "Your donation server just had an error! #{e}"
   end
