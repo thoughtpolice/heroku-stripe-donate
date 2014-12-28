@@ -42,7 +42,7 @@
 
 
     "MAILGUN_API_KEY": {
-      "description": "Optional mailgun API key for error reports."
+      "description": "Optional mailgun API key for error reports.",
       "required": false
     },
     "MAILGUN_DOMAIN": {
