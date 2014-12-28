@@ -123,6 +123,11 @@ notifications to be sent to your devices.
   - `PUSHOVER_DEVICE` - Specify a particular registered device by
     name; only this device will receive pushes.
 
+You can also control when to send emails:
+
+  - `PUSH_ON_SUCCESS` - Send push notifications on successful donations.
+  - `PUSH_ON_FAILURE` - Send push notifications when an error occurs.
+
 It's recommended you simply create a new application for your
 deployment (in the 'Apps & Plugins' section of the website) titled
 something like 'Stripe Donations', and use that application token for
@@ -138,6 +143,11 @@ occur.
   - `MAILGUN_DOMAIN` - The domain registered with mailgun, e.g. `donate.foobar.org`
   - `MAILGUN_FROM_ADDR` - The `From:` address, e.g. `robot@donate.foobar.org`
   - `MAILGUN_TO_ADDR` - The `To:` address to send emails to.
+
+You can also control when to send emails:
+
+  - `MAIL_ON_SUCCESS` - Send mails on successful donations.
+  - `MAIL_ON_FAILURE` - Send mails when an error occurs.
 
 # Join in
 

@@ -18,6 +18,7 @@
       "value": "*"
     },
 
+
     "PUSHOVER_USER_KEY": {
       "description": "Optional Pushover.net user key for push notifications.",
       "required": false
@@ -30,6 +31,15 @@
       "description": "Optional device name for Pushover.net; only this device will receive notifications.",
       "required": false
     },
+    "PUSH_ON_SUCCESS": {
+      "description": "Send push notifications when a successful donation occurs.",
+      "value": "0"
+    },
+    "PUSH_ON_FAILURE": {
+      "description": "Send push notifications when an error occurs.",
+      "value": "1"
+    },
+
 
     "MAILGUN_API_KEY": {
       "description": "Optional mailgun API key for error reports."
@@ -46,6 +56,15 @@
     "MAILGUN_TO_ADDR": {
       "description": "The address to send emails to, e.g. `admin@foobar.org`.",
       "required": false
+    },
+    "MAIL_ON_SUCCESS": {
+      "description": "Send an email when a successful donation occurs.",
+      "value": "0"
+    },
+    "MAIL_ON_FAILURE": {
+      "description": "Send an email when an error occurs.",
+      "value": "1"
     }
+
   }
 }

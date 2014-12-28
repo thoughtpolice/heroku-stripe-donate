@@ -26,6 +26,10 @@ end
 
 # Default setup
 ENV['CORS_ACCEPT_DOMAIN'] = '*' if ENV['CORS_ACCEPT_DOMAIN'].nil?
+ENV['PUSH_ON_SUCCESS']    = '0' if ENV['PUSH_ON_SUCCESS'].nil?
+ENV['PUSH_ON_FAILURE']    = '1' if ENV['PUSH_ON_FAILURE'].nil?
+ENV['MAIL_ON_SUCCESS']    = '0' if ENV['MAIL_ON_SUCCESS'].nil?
+ENV['MAIL_ON_FAILURE']    = '1' if ENV['MAIL_ON_FAILURE'].nil?
 
 # ------------------------------------------------------------------------------
 # -- Setup
@@ -37,11 +41,16 @@ set :stripe_charge_desc, ENV['STRIPE_CHARGE_DESC']
 set :pushover_key,    ENV['PUSHOVER_USER_KEY']
 set :pushover_token,  ENV['PUSHOVER_APP_TOKEN']
 set :pushover_device, ENV['PUSHOVER_DEVICE']
+set :push_on_success, ENV['PUSH_ON_SUCCESS']
+set :push_on_failure, ENV['PUSH_ON_FAILURE']
 
 set :mailgun_key,     ENV['MAILGUN_API_KEY']
 set :mailgun_from,    ENV['MAILGUN_FROM_ADDR']
 set :mailgun_to,      ENV['MAILGUN_TO_ADDR']
 set :mailgun_domain,  ENV['MAILGUN_DOMAIN']
+set :mail_on_success, ENV['PUSH_ON_SUCCESS']
+set :mail_on_failure, ENV['PUSH_ON_FAILURE']
+
 
 Stripe.api_key = settings.stripe_secret_key
 
@@ -69,6 +78,14 @@ def send_email(subject, text)
   end
 end
 
+def send_success_mail(subject, text)
+  send_email(subject, text) if settings.mail_on_success == '1'
+end
+
+def send_failure_mail(subject, text)
+  send_email(subject, text) if settings.mail_on_failure == '1'
+end
+
 def push_msg(title, msg)
     Pushover.notification(
       url:       'https://dashboard.stripe.com',
@@ -77,6 +94,14 @@ def push_msg(title, msg)
       title:     title,
       message:   msg,
     ) unless settings.pushover_key.nil? or settings.pushover_token.nil?
+end
+
+def send_success_push(subject, text)
+  push_msg(subject, text) if settings.push_on_success == '1'
+end
+
+def send_failure_push(subject, text)
+  push_msg(subject, text) if settings.push_on_failure == '1'
 end
 
 # ------------------------------------------------------------------------------
@@ -105,6 +130,9 @@ post '/charge' do
   response['Access-Control-Allow-Origin'] = ENV['CORS_ACCEPT_DOMAIN']
 
   begin
+    dollars = (@amount.to_f/100).round(2)
+    LOG.info "Got a donation request for $#{dollars} USD from #{@email}."
+
     # Create charge.
     Stripe::Charge.create(
       :amount        => @amount,
@@ -114,19 +142,16 @@ post '/charge' do
       :description   => settings.stripe_charge_desc,
     )
 
-    dollars = (@amount.to_f/100).round(2)
-
-    # Mailgun emails
-    send_email "You just got a donation!",
-      "Hey, just letting you know that you just got a donation of"+
+    send_success_mail "You just got a donation!",
+      "Hey, just letting you know that you just got a donation of "+
       "$#{dollars} USD from #{@email}!"
 
-    # Pushover notifications
-    push_msg "Awesome news",
+    send_success_push "Awesome news",
       "You just received a donation of $#{dollars} USD "+
       "from #{@email}!"
 
     # Finished
+    LOG.info "Donation successful!"
     status 200
 
   # -- Declined
@@ -139,11 +164,18 @@ post '/charge' do
     status e.http_status
     body e.json_body[:error].to_json
 
+    send_failure_mail "Whoops!", "Your donation server just had an error! #{e}"
+    send_failure_push "Uh oh!", "Your donation server just had an error! #{e}"
+
   # -- Some other transient error
   rescue Stripe::InvalidRequestError,
          Stripe::AuthenticationError,
          Stripe::APIConnectionError => e
     status e.http_status
     body e.json_body[:error].to_json
+
+    send_failure_mail "Whoops!", "Your donation server just had an error! #{e}"
+    send_failure_push "Uh oh!", "Your donation server just had an error! #{e}"
   end
+
 end
