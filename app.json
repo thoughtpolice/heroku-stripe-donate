@@ -17,7 +17,10 @@
       "description": "Value to set for the `Access-Control-Allow-Origin` header.",
       "value": "*"
     },
-
+    "JAVASCRIPT_PUBKEY_NAME": {
+      "description": "JavaScript variable name for a string containing your Stripe public key",
+      "value": "stripe_pubkey"
+    },
 
     "PUSHOVER_USER_KEY": {
       "description": "Optional Pushover.net user key for push notifications.",

@@ -26,6 +26,7 @@ end
 
 # Default setup
 ENV['CORS_ACCEPT_DOMAIN'] = '*' if ENV['CORS_ACCEPT_DOMAIN'].nil?
+ENV['JAVASCRIPT_PUBKEY_NAME'] = 'stripe_pubkey' if ENV['JAVASCRIPT_PUBKEY_NAME'].nil?
 ENV['PUSH_ON_SUCCESS']    = '0' if ENV['PUSH_ON_SUCCESS'].nil?
 ENV['PUSH_ON_FAILURE']    = '1' if ENV['PUSH_ON_FAILURE'].nil?
 ENV['MAIL_ON_SUCCESS']    = '0' if ENV['MAIL_ON_SUCCESS'].nil?
@@ -37,6 +38,8 @@ ENV['MAIL_ON_FAILURE']    = '1' if ENV['MAIL_ON_FAILURE'].nil?
 set :stripe_public_key,  ENV['STRIPE_KEYS'].split(':')[0]
 set :stripe_secret_key,  ENV['STRIPE_KEYS'].split(':')[1]
 set :stripe_charge_desc, ENV['STRIPE_CHARGE_DESC']
+set :cors_domain,        ENV['CORS_ACCEPT_DOMAIN']
+set :js_pubkey_name,     ENV['JAVASCRIPT_PUBKEY_NAME']
 
 set :pushover_key,    ENV['PUSHOVER_USER_KEY']
 set :pushover_token,  ENV['PUSHOVER_APP_TOKEN']
@@ -110,10 +113,10 @@ end
 
 # -- Show public key
 get '/pubkey.js' do
-  response['Access-Control-Allow-Origin'] = ENV['CORS_ACCEPT_DOMAIN']
+  response['Access-Control-Allow-Origin'] = settings.cors_domain
 
   content_type 'text/javascript'
-  "var stripe_pubkey = \"#{settings.stripe_public_key}\";"
+  "var #{settings.js_pubkey_name} = \"#{settings.stripe_public_key}\";"
 end
 
 # -- Ping URL
@@ -128,7 +131,7 @@ post '/charge' do
   @token  = params[:token]
   @email  = params[:email]
 
-  response['Access-Control-Allow-Origin'] = ENV['CORS_ACCEPT_DOMAIN']
+  response['Access-Control-Allow-Origin'] = settings.cors_domain
 
   begin
     dollars = (@amount.to_f/100).round(2)
