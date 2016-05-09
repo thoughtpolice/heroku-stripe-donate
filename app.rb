@@ -24,6 +24,18 @@ if ENV['STRIPE_KEYS'].split(':').length != 2
   Kernel.exit(1)
 end
 
+unless ENV['STRIPE_KEYS'].split(':')[0].start_with? 'pk_test' or
+       ENV['STRIPE_KEYS'].split(':')[0].start_with? 'pk_live'
+  LOG.fatal "Public key must start with 'pk_test' or 'pk_live'"
+  Kernel.exit(1)
+end
+
+unless ENV['STRIPE_KEYS'].split(':')[1].start_with? 'sk_test' or
+       ENV['STRIPE_KEYS'].split(':')[1].start_with? 'sk_live'
+  LOG.fatal "Secret key must start with 'sk_test' or 'sk_live'"
+  Kernel.exit(1)
+end
+
 # Default setup
 ENV['CORS_ACCEPT_DOMAIN'] = '*' if ENV['CORS_ACCEPT_DOMAIN'].nil?
 ENV['JAVASCRIPT_PUBKEY_NAME'] = 'stripe_pubkey' if ENV['JAVASCRIPT_PUBKEY_NAME'].nil?
